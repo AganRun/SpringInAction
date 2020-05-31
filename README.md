@@ -54,6 +54,16 @@ Spring向开发者提供的工具。例如，代码修改应用自动重启。
 
 ## 第二章 开发web应用
 
+## 2.1 展现信息
+
+Spring提供了多种定义视图的方式，包括JavaServer Pages(JSP)、Thymeleaf、FreeMarker、Mustache和基于Groovy的模板。
+
+使用Thymeleaf
+1. 添加Starter启动器。
+2. 在运行时，SpringBoot的自动配置发现Thymeleaf在类路径中，因此会为SpringMVC创建支持Thymeleaf视图的bean。
+
+Thymeleaf模板就是增加了一些额外元素属性的HTML。例如"th:each"会迭代一个元素集合。
+
 
 
 
