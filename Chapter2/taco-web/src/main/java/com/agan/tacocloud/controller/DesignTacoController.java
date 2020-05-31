@@ -1,8 +1,8 @@
 package com.agan.tacocloud.controller;
 
-import com.agan.tacocloud.service.bo.Ingredient;
-import com.agan.tacocloud.service.bo.Ingredient.Type;
-import com.agan.tacocloud.service.bo.Taco;
+import com.agan.tacocloud.pojo.Ingredient;
+import com.agan.tacocloud.pojo.Ingredient.Type;
+import com.agan.tacocloud.pojo.Taco;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

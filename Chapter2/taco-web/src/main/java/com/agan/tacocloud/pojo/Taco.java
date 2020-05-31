@@ -1,4 +1,4 @@
-package com.agan.tacocloud.service.bo;
+package com.agan.tacocloud.pojo;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
