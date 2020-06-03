@@ -64,9 +64,22 @@ Spring提供了多种定义视图的方式，包括JavaServer Pages(JSP)、Thyme
 
 Thymeleaf模板就是增加了一些额外元素属性的HTML。例如"th:each"会迭代一个元素集合。
 
+## 2.3 校验表单输入
 
+有种校验是在方法中添加大量乱七八糟的if/then代码块，但是这样会难以阅读和调试。
 
+Spring支持JAVA的Bean校验API。在SpringBoot项目中，Validation API以及Validation API的Hibernate实现将会作
+为SpringBoot web starter的传递性依赖自动添加到项目中。
 
+使用步骤
+1. 在要被校验的类上声明校验规则
+2. 在控制器方法中声明进行校验
+3. 修改表单视图以展示校验错误
+
+复杂的自定义逻辑可以使用正则表达式  
+```java
+@Pattern(regexp = "^(0[1-9]|1[0-2])([\\/])([1-9][0-9])$", message = "Must be formatted MM/YY")
+```
 
 
 
