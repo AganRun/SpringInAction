@@ -80,8 +80,23 @@ Spring支持JAVA的Bean校验API。在SpringBoot项目中，Validation API以及
 ```java
 @Pattern(regexp = "^(0[1-9]|1[0-2])([\\/])([1-9][0-9])$", message = "Must be formatted MM/YY")
 ```
+## 2.4 视图控制器
 
+定义Controller除了可以通过新建类，添加@controller注解，还可以通过类实现WebMvcConfigure接口实现。
+```java
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("home");
+    }
+}
+```
 
+Thymeleaf作为渲染模板，默认只有第一次使用的时候解析一次，解析的结果会被后续的请求使用。  
+这样可以提升性能，对于开发环境，可以通过Spring.thymeleaf.cache=false禁用。
 
-
-
+## 第二章小结
+* SpringMVC是基于注解的，通过@RequestMapping之类的注解启用请求处理方法的声明。
+* SpringMVC支持校验，通过Java Bean Validation API 和 Validation API的实现完成
+* Spring支持多种视图方案

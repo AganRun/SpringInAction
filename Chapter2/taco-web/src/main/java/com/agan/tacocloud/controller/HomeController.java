@@ -3,7 +3,7 @@ package com.agan.tacocloud.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
+//@Controller   //改用声明式视图控制器
 public class HomeController {
 
     @GetMapping("/")
