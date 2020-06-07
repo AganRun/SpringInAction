@@ -100,3 +100,52 @@ Thymeleaf作为渲染模板，默认只有第一次使用的时候解析一次�
 * SpringMVC是基于注解的，通过@RequestMapping之类的注解启用请求处理方法的声明。
 * SpringMVC支持校验，通过Java Bean Validation API 和 Validation API的实现完成
 * Spring支持多种视图方案
+
+# 第三章 使用数据
+
+#### 初始化/预置 SQL
+
+如果在应用的根类路径下存在明为schema.sql的文件，那么在应用启动的时候将会基于数据库执行这个文件中的SQL  
+放在src/main/resources下即可。
+
+可能还希望预加载一些数据，可以把SQL命名为data.sql同样放到此目录下
+
+> 注：SpringBoot2.0之后，需要加入```spring.datasource.initialization-mode=always```
+
+#### JDBC save获得ID
+
+- 可以使用带有preparedStatementCreator和KeyHolder的update方法
+```java
+public int update(PreparedStatementCreator psc, KeyHolder generatedKeyHolder);
+```
+
+使用步骤：
+1. 先创建一个PreparedStatementCreatorFactory
+2. SQL 传递给它，包含参数的类型
+3. 调用工厂的newPreparedStatementCreator()
+4. 传入对象以及KeyHolder
+```java
+PreparedStatementCreator psc = new PreparedStatementCreatorFactory(
+                "insert into taco (name, createAt) values (?, ?)", Types.CHAR, Types.DATE
+        ).newPreparedStatementCreator(
+                Arrays.asList(taco.getName(), new Timestamp(taco.getCreateAt().getTime()))
+        );
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(psc, keyHolder);
+```
+
+- 使用SimpleJdbcInsert(相比上一种，极大得简化的代码逻辑)  
+它有两个很重要的插入方法，execute()和executeAndReturnKey()  
+参数就是一个Map，key为列名，value为值。可以使用Jackson的ObjectMapper的convertValue()方法直接构建出一个Map
+```java
+// 初始化
+this.orderTacoInserter = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("Taco_Order_Tacos");
+
+//使用
+@SuppressWarnings("unchecked")
+Map<String, Object> values = objectMapper.convertValue(order, Map.class);
+values.put("placeAt", order.getPlaceAt());  //因为时间会默认转为Long
+long orderId = orderInserter.executeAndReturnKey(values).longValue();
+```
+
