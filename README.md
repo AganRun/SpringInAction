@@ -149,3 +149,26 @@ values.put("placeAt", order.getPlaceAt());  //因为时间会默认转为Long
 long orderId = orderInserter.executeAndReturnKey(values).longValue();
 ```
 
+### JPA
+
+JPA需要实体有一个无参的构造器
+
+#### @PrePersist
+
+createdAt()添加了PrePersist注解，作为了一个回调方法  
+在持久化之前，会使用这个方法将createdAt方法设置为当前的日期和时间
+
+```java
+@Data
+@NoArgsConstructor
+@Entity
+public class Taco {
+    private Date createdAt;
+    ...
+    @PrePersist
+    void createAt() {
+        this.createdAt = new Date();
+    }
+}
+
+```
