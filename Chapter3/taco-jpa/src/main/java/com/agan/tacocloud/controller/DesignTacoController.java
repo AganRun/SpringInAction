@@ -12,17 +12,11 @@ import com.agan.tacocloud.po.Ingredient;
 import com.agan.tacocloud.po.Ingredient.Type;
 import com.agan.tacocloud.po.Order;
 import com.agan.tacocloud.po.Taco;
-import com.agan.tacocloud.po.TacoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
-
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/design")
@@ -30,14 +24,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepo;
-    private TacoRepository designRepo;
+
+    private TacoRepository tacoRepo;
 
     @Autowired
-    public DesignTacoController(
-            IngredientRepository ingredientRepo,
-            TacoRepository designRepo) {
+    public DesignTacoController(IngredientRepository ingredientRepo, TacoRepository tacoRepo) {
         this.ingredientRepo = ingredientRepo;
-        this.designRepo = designRepo;
+        this.tacoRepo = tacoRepo;
     }
 
     @ModelAttribute(name = "order")
@@ -45,8 +38,8 @@ public class DesignTacoController {
         return new Order();
     }
 
-    @ModelAttribute(name = "taco")
-    public Taco taco() {
+    @ModelAttribute(name = "design")
+    public Taco design() {
         return new Taco();
     }
 
@@ -60,32 +53,21 @@ public class DesignTacoController {
             model.addAttribute(type.toString().toLowerCase(),
                     filterByType(ingredients, type));
         }
-        model.addAttribute("design", new Taco());
+
         return "design";
     }
 
     @PostMapping
-    public String processDesign(
-            @Valid TacoVo designVo, Errors errors,
-            @ModelAttribute Order order) {
-        //从thymeleaf提交过来的表单无法解析taco中的ingredients,尝试许久后无果
-        //改变了提交策略
+    public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Order order) {
         if (errors.hasErrors()) {
             return "design";
         }
-        List<Ingredient> ingredients = new ArrayList<>();
-        for (String ingredient : designVo.getIngredients()) {
-            ingredients.add(ingredientRepo.findById(ingredient));
-        }
-        Taco design = designVo.buildTaco(ingredients);
-        Taco saved = designRepo.save(design);
+        Taco saved = tacoRepo.save(taco);
         order.addDesign(saved);
-
         return "redirect:/orders/current";
     }
 
-    private List<Ingredient> filterByType(
-            List<Ingredient> ingredients, Type type) {
+    private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {
         return ingredients
                 .stream()
                 .filter(x -> x.getType().equals(type))

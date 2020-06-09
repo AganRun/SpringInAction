@@ -1,6 +1,5 @@
 package com.agan.tacocloud.controller;
 
-import com.agan.tacocloud.controller.HomeController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(HomeController.class)
+//@WebMvcTest(HomeController.class)
 @RunWith(SpringRunner.class)
 public class HomeControllerTest {
 
