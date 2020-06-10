@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.agan.tacocloud.dao.OrderRepository;
 import com.agan.tacocloud.pojo.Order;
 import com.agan.tacocloud.pojo.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,7 @@ public class JdbcOrderRepository implements OrderRepository {
 
         this.objectMapper = new ObjectMapper();
     }
-// end::core[]
 
-    // tag::save[]
     @Override
     public Order save(Order order) {
         order.setPlacedAt(new Date());
@@ -52,8 +51,7 @@ public class JdbcOrderRepository implements OrderRepository {
 
     private long saveOrderDetails(Order order) {
         @SuppressWarnings("unchecked")
-        Map<String, Object> values =
-                objectMapper.convertValue(order, Map.class);
+        Map<String, Object> values = objectMapper.convertValue(order, Map.class);
         values.put("placedAt", order.getPlacedAt());
 
         long orderId = orderInserter.executeAndReturnKey(values).longValue();
@@ -66,16 +64,4 @@ public class JdbcOrderRepository implements OrderRepository {
         values.put("taco", taco.getId());
         orderTacoInserter.execute(values);
     }
-// end::save[]
-
-/*
-// tag::core[]
-
-...
-
-// end::core[]
- */
-
-// tag::core[]
 }
-// end::core[]

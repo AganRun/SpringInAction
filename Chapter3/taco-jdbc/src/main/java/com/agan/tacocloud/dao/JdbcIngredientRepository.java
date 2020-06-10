@@ -1,11 +1,9 @@
-// tag::classShell[]
 package com.agan.tacocloud.dao;
-//end::classShell[]
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//tag::classShell[]
 
+import com.agan.tacocloud.dao.IngredientRepository;
 import com.agan.tacocloud.pojo.Ingredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,8 +12,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class JdbcIngredientRepository
-        implements IngredientRepository {
+public class JdbcIngredientRepository implements IngredientRepository {
 
     private JdbcTemplate jdbc;
 
@@ -37,22 +34,22 @@ public class JdbcIngredientRepository
                 this::mapRowToIngredient, id);
     }
 
-    //    @Override
-    public Ingredient findOne(String id) {
-        return jdbc.queryForObject(
-                "select id, name, type from Ingredient where id=?",
-                new RowMapper<Ingredient>() {
-                    public Ingredient mapRow(ResultSet rs, int rowNum)
-                            throws SQLException {
-                        return new Ingredient(
-                                rs.getString("id"),
-                                rs.getString("name"),
-                                Ingredient.Type.valueOf(rs.getString("type")));
-                    }
-
-                    ;
-                }, id);
-    }
+  /*
+  @Override
+  public Ingredient findOne(String id) {
+    return jdbc.queryForObject(
+        "select id, name, type from Ingredient where id=?",
+        new RowMapper<Ingredient>() {
+          public Ingredient mapRow(ResultSet rs, int rowNum) 
+              throws SQLException {
+            return new Ingredient(
+                rs.getString("id"), 
+                rs.getString("name"),
+                Ingredient.Type.valueOf(rs.getString("type")));
+          };
+        }, id);
+  }
+   */
 
     @Override
     public Ingredient save(Ingredient ingredient) {

@@ -3,8 +3,8 @@ package com.agan.tacocloud.dao;
 
 import com.agan.tacocloud.pojo.Taco;
 
-public interface TacoRepository  {
+public interface TacoRepository {
 
-  Taco save(Taco design);
-  
+    Taco save(Taco design);
+
 }

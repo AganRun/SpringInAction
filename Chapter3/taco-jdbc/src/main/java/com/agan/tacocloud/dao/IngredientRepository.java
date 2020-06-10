@@ -1,6 +1,5 @@
 package com.agan.tacocloud.dao;
 
-
 import com.agan.tacocloud.pojo.Ingredient;
 
 public interface IngredientRepository {

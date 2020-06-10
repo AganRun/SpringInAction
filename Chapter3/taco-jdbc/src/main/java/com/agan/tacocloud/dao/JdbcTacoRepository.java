@@ -5,6 +5,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.agan.tacocloud.dao.TacoRepository;
 import com.agan.tacocloud.pojo.Ingredient;
 import com.agan.tacocloud.pojo.Taco;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +32,6 @@ public class JdbcTacoRepository implements TacoRepository {
         for (Ingredient ingredient : taco.getIngredients()) {
             saveIngredientToTaco(ingredient, tacoId);
         }
-
         return taco;
     }
 
@@ -45,10 +45,9 @@ public class JdbcTacoRepository implements TacoRepository {
                         Arrays.asList(
                                 taco.getName(),
                                 new Timestamp(taco.getCreatedAt().getTime())));
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(psc, keyHolder);
-
+        keyHolder.getKeys().get("id");
         return keyHolder.getKey().longValue();
     }
 

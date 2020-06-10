@@ -1,17 +1,17 @@
 create table if not exists Ingredient (
-  id varchar(4) not null,
+  id varchar(4) primary key,
   name varchar(25) not null,
   type varchar(10) not null
 );
 
 create table if not exists Taco (
-  id identity,
+  id bigserial primary key,
   name varchar(50) not null,
   createdAt timestamp not null
 );
 
 create table if not exists Taco_Ingredients (
-  taco bigint not null,
+  taco int8 not null,
   ingredient varchar(4) not null
 );
 
@@ -21,7 +21,7 @@ alter table Taco_Ingredients
     add foreign key (ingredient) references Ingredient(id);
 
 create table if not exists Taco_Order (
-	id identity,
+	id bigserial primary key,
 	deliveryName varchar(50) not null,
 	deliveryStreet varchar(50) not null,
 	deliveryCity varchar(50) not null,
@@ -34,7 +34,7 @@ create table if not exists Taco_Order (
 );
 
 create table if not exists Taco_Order_Tacos (
-	tacoOrder bigint not null,
+	tacoOrder int8 not null,
 	taco bigint not null
 );
 
