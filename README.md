@@ -213,3 +213,95 @@ public class TacoCloudApplication {
 * 当需要知道新生成的ID的值时，可以使用PreparedStatementCreator和KeyHolder
 * 简化数据插入===>SimpleJdbcInsert
 * JPA极大简化持久化操作，只需编写Repository接口
+
+# 第四章 配置Spring Security
+
+## 初次使用
+
+当加入了starter启动器后，项目启动时，在日志中会出现一个账号及随机密码
+```text
+Using generated security password: cf18a7e9-ffa6-429f-9331-40d2dd121f53
+```
+此时登录项目会有一个登录页面，输入账号密码才能访问
+
+security starter的影响
+* 所有HTTP请求都需要认证，认证过程是通过HTTP basic认证对话框实现的
+* 没有特定的角色及权限，只有一个user用户
+* 没有登录页面
+ 
+## 配置Security
+
+只有一个用户显然满足不了需求，security有四种配置用户的方式
+* 基于内存的用户存储 （将账号密码直接硬编码到配置代码中，优点：方便快捷，可以用来调试。缺点：项目上线后不方便修改用户）
+* 基于JDBC的用户存储
+* 以LDAP作为后端的用户存储
+* 自定义用户详情服务
+
+### JDBC配置Security
+
+当配置了数据源之后，Spring有一套默认的用户搜索SQL。若表于其不匹配，则可以自定义SQL去配置用户。
+
+酱默认的SQL查询替换为自定义的设计时，很重要的一点是遵循查询的基本协议。**所有查询将用户名作为唯一参数**
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityJdbcConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    DataSource dataSource;
+    
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery(
+                        "select username, password, enabled from Users where username = ?"
+                )
+                .authoritiesByUsernameQuery(
+                            "select username, authority from UserAuthorities where username = ?"
+                );
+    }
+}
+```
+
+### 密码加密
+
+数据库明文存储密码是很危险的，passwordEncoder()方法可以接受任意的**PasswordEncoder接口**的实现
+- BCryptPasswordEncoder: 使用bcrypt强哈希加密
+- NoOpPasswordEncoder: 不进行任何转码(已过期)
+- Pbkdf2PasswordEncoder: 使用PBKDF2加密
+- SCryptPasswordEncoder: 使用scrypt哈希加密
+- StandardPasswordEncoder: 使用SHA-256哈希加密
+
+逻辑是：数据库中的密码应该永远不会被解密。将输入的密码进行算法转码，然后与库中的密码对比。
+
+```java
+@Bean
+public static PasswordEncoder passwordEncoder() {
+    //自定义一个加密流程
+    return new PasswordEncoder() {
+        @Override
+        public String encode(CharSequence charSequence) {
+            //加1加密，哈哈
+            System.out.println("encode" + charSequence);
+            return charSequence.toString() + 1;
+        }
+
+        @Override
+        public boolean matches(CharSequence charSequence, String s) {
+            System.out.println("match,charSequence:" + charSequence + ", dbPassword:" + s);
+            return encode(charSequence).equals(s);
+        }
+    };
+}
+
+
+DB: user1/12341
+输入: user1/1234
+
+控制台输出
+match,charSequence:1234, dbPassword12341
+encode1234
+```
