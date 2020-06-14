@@ -103,6 +103,8 @@ Thymeleaf作为渲染模板，默认只有第一次使用的时候解析一次�
 
 # 第三章 使用数据
 
+### JDBC 
+
 #### 初始化/预置 SQL
 
 如果在应用的根类路径下存在明为schema.sql的文件，那么在应用启动的时候将会基于数据库执行这个文件中的SQL  
@@ -155,7 +157,7 @@ JPA需要实体有一个无参的构造器
 
 #### @PrePersist
 
-createdAt()添加了PrePersist注解，作为了一个回调方法  
+createdAt()添加了PrePersist注解，作为了一个**回调方法**  
 在持久化之前，会使用这个方法将createdAt方法设置为当前的日期和时间
 
 ```java
@@ -177,3 +179,27 @@ public class Taco {
 
 JPA在进行查询方法命名时，会将get、read和find视为同义词，都是用来获取一个或多个实体的  
 SpringData会忽略主体中大部分的单词，你尽可以将方法命名为readPuppiesBy...
+
+### SpringBoot启动任务
+
+可以注入CommandLineRunner类及其实现类的Bean，Spring启动时会扫描到这些类，并执行其中的run方法
+最简单的Demo，在启动类中加个注入
+```java
+@SpringBootApplication
+public class TacoCloudApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TacoCloudApplication.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner dataLoader(IngredientRepository repo) {
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+                repo.save(new Ingredient("FLTO", "Flour Tortilla", Type.WRAP));
+            }
+        };
+    }
+}
+```
