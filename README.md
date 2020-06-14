@@ -203,3 +203,13 @@ public class TacoCloudApplication {
     }
 }
 ```
+
+如果有多个启动任务，可以创建多个CommandLineRunner的子类  
+执行顺序由@Order指定，优先级是按value值从小到大顺序
+
+## 第三章小结
+
+* JdbcTemplate可以简化JDBC的使用
+* 当需要知道新生成的ID的值时，可以使用PreparedStatementCreator和KeyHolder
+* 简化数据插入===>SimpleJdbcInsert
+* JPA极大简化持久化操作，只需编写Repository接口
