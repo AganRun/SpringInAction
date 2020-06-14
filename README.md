@@ -172,3 +172,8 @@ public class Taco {
 }
 
 ```
+
+#### JPA方法命名查询
+
+JPA在进行查询方法命名时，会将get、read和find视为同义词，都是用来获取一个或多个实体的  
+SpringData会忽略主体中大部分的单词，你尽可以将方法命名为readPuppiesBy...
