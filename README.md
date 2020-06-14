@@ -305,3 +305,9 @@ DB: user1/12341
 match,charSequence:1234, dbPassword12341
 encode1234
 ```
+
+### 自定义用户认证
+
+1. 自定义一个实体类，例如User,去实现**UserDetails**接口
+2. 定义对应的Repository,Service(需要实现**UserDetailsService的loadUserByUsername(String username)**)
+3. 配置类中，auth.userDetailsService(注入的service)
