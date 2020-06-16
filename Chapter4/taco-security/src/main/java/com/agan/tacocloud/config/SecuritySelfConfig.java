@@ -1,6 +1,6 @@
 package com.agan.tacocloud.config;
 
-import com.agan.tacocloud.UserService;
+import com.agan.tacocloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.agan.tacocloud;
+package com.agan.tacocloud.service;
 
 import com.agan.tacocloud.dao.UserRepository;
 import com.agan.tacocloud.po.User;
