@@ -311,3 +311,8 @@ encode1234
 1. 自定义一个实体类，例如User,去实现**UserDetails**接口
 2. 定义对应的Repository,Service(需要实现**UserDetailsService的loadUserByUsername(String username)**)
 3. 配置类中，auth.userDetailsService(注入的service)
+
+## 保护Web请求
+
+在WebSecurityConfigureAdapter的Configure(HttpSecurity http)方法中
+可以配置的功能有：
