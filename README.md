@@ -316,3 +316,102 @@ encode1234
 
 在WebSecurityConfigureAdapter的Configure(HttpSecurity http)方法中
 可以配置的功能有：
+
+- 为某个请求提供服务之前，先预先满足条件
+- 配置自定义的登录页
+- 支持用户退出应用
+- 预防跨站请求伪造
+
+### 保护请求 & 登录
+
+可以通过配置路径与对应的角色控制，并指定登录页
+```java
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+            .antMatchers("/design", "/orders")
+//                    .hasRole("USER")
+                .access("hasRole('USER')")     // design 和 orders 路径，需要有user角色
+            .antMatchers("/", "/**")
+//                    .permitAll();
+                .access("permitAll")    //对于/和/**路径不拦截
+        .and()
+            .formLogin()
+                .loginPage("/login")   //登录页面
+                .defaultSuccessUrl("/design")  //成功后重定向到design页面
+        ;
+}
+```
+
+存在很多的配置方法，列举其中的几个
+
+| 方法 | 能做什么 |
+| --- | --- |
+| access(String) | 如果给定的SpEL表达式计算结果为TRUE，就允许访问 |
+| authenticated() | 允许认证过的用户访问 |
+| denyAll() | 无条件拒绝所有访问 | 
+| hasIpAddress(String) | 如果请求来自给定的IP地址，允许访问 | 
+| hasRole(String) | 如果用户具备指定的角色，允许访问 |
+| not() | 对其他方法的结果求反 | 
+| permitAll() | 无条件允许访问 | 
+| rememberMe() | 如果用户通过Remember-me认证的，允许访问 | 
+
+SpEl表达式可以编写复杂的逻辑。例如只允许具备ROLE_USER权限的用户，在星期二下午创建新的Taco
+
+### 退出
+```java
+.and().logout().logoutSuccessUrl("/");
+```
+
+### POST请求403?
+
+在上述配置完之后，即使用户已经登录了，在提交订单，请求/design时依旧会被拦截，页面403。
+那是因为**SpringSecurity默认是开启了内置的CSRF保护, 建议不要关掉**。先了解一下什么是CSRF。
+
+#### CSRF
+跨站请求伪造(Cross-Site Request Forgery, CSRF)。  
+它会让用户在一个恶意Web页面填写信息，然后自动将表单以攻击受害者的身份提交到另外一个应用上。
+  
+可以理解为：攻击者盗用了你的身份，以你的名义发送恶意请求，对服务器来说这个请求是完全合法的，但是却完成了攻击者所期望的一个操作，比如以你的名义发送邮件、发消息，盗取你的账号，添加系统管理员，甚至于购买商品、虚拟货币转账等。 
+  
+**预防措施** ：应用在展现表单的时候，生成一个CSRF token，放在隐藏域存储起来，在提交表单的时候将token一起发送至服务器，由服务器对比匹配。
+
+可以加入隐藏域（JSP、Thymeleaf默认生成）  
+```html
+<input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+```
+提交表单时,使用th:action属性
+```html
+<form method="POST" th:action="@{/login}" id="loginForm" >
+```
+
+## 了解用户是谁
+
+如何获取当前用户的信息
+- 注入Principal对象到控制器
+- 注入Authentication对象到控制器
+- 使用@AuthenticationPricipal注解标注方法
+- 使用SecurityContextHolder来获取安全上下文
+
+```java
+public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Order order, Principal principal) {
+    String username = principal.getName()   //获取用户的username=>获取用户信息  缺点：业务中会掺杂安全代码
+
+public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Order order, Authentication authentication) {
+    User user = (User) authentication.getPrincipal();       //强转User对象
+
+Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    User user = (User) authentication.getPrincipal();       //繁琐，但是任何地方都可以，不限制在Controller中
+
+public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Order order, @AuthenticationPrincipal User user) {
+    //使用注解，最方便
+}
+```
+
+## 第四章小结
+
+- SpringSecurity有自动配置，往往手动配置才能满足需求
+- 可以通过多种存储方式配置管理[内存、自定义、LDAP、数据库]
+- 自动防范CSRF攻击
+- 获取用户信息的多种方式
