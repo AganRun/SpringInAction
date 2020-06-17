@@ -10,6 +10,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Pattern;
 
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ManyToAny;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -55,6 +56,9 @@ public class Order implements Serializable {
 
     @ManyToMany(targetEntity = Taco.class)
     private List<Taco> tacos = new ArrayList<>();
+
+    @ManyToOne
+    private User user;
 
     public void addDesign(Taco design) {
         this.tacos.add(design);
