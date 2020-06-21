@@ -1,0 +1,30 @@
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:mykeys.jks
+    key-store-password: letmein
+    key-password: letmein
+#  port: 0  # 会任意选择一个端口
+
+# 配置数据源信息
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring-action-jpa
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  # 打开自动建表
+  jpa:
+    generate-ddl: true
+  # 打印SQL
+    show-sql: true
+
+# 配置日志
+logging:
+  config: classpath:logback.xml
+
+gretting:
+  welcome: You are using ${spring.application.name}
+taco:
+  orders:
+    pageSize: 5

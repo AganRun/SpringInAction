@@ -16,11 +16,11 @@
             <!--日志文件输出的文件名-->
             <FileNamePattern>${LOG_HOME}/runtime.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <!-- each file should be at most 5MB, keep 30 days worth of history, but at most 100MB -->
-<!--            <maxFileSize>5MB</maxFileSize>-->
-<!--            &lt;!&ndash;日志文件保留天数&ndash;&gt;-->
-<!--            <MaxHistory>30</MaxHistory>-->
-<!--            &lt;!&ndash;用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志&ndash;&gt;-->
-<!--            <totalSizeCap>100MB</totalSizeCap>-->
+            <maxFileSize>5MB</maxFileSize>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
