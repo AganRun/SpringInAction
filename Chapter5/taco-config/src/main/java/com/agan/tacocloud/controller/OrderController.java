@@ -1,7 +1,7 @@
 package com.agan.tacocloud.controller;
 
-import javax.validation.Valid;
 
+import com.agan.tacocloud.config.OrderProperties;
 import com.agan.tacocloud.dao.OrderRepository;
 import com.agan.tacocloud.po.Order;
 import com.agan.tacocloud.po.User;
@@ -22,20 +22,23 @@ import org.springframework.web.bind.support.SessionStatus;
 @Controller
 @RequestMapping("/orders")
 @SessionAttributes("order")
-@ConfigurationProperties(prefix = "taco.orders")
+//@ConfigurationProperties(prefix = "taco.orders")
 public class OrderController {
 
     private OrderRepository orderRepo;
 
-    private int pageSize = 20;
+//    private int pageSize = 20;
+//
+//    public void setPageSize(int pageSize) {
+//        this.pageSize = pageSize;
+//    }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+    private OrderProperties properties;
 
     @Autowired
-    public OrderController(OrderRepository orderRepo) {
+    public OrderController(OrderRepository orderRepo, OrderProperties properties) {
         this.orderRepo = orderRepo;
+        this.properties = properties;
     }
 
     @GetMapping("/current")
@@ -56,7 +59,8 @@ public class OrderController {
     @GetMapping
     public String ordersForUser(@AuthenticationPrincipal User user, Model model) {
 //        Pageable pageable = PageRequest.of(0, 20);
-        Pageable pageable = PageRequest.of(0, pageSize);
+//        Pageable pageable = PageRequest.of(0, pageSize);
+        Pageable pageable = PageRequest.of(0, properties.getPageSize());
         model.addAttribute("orders", orderRepo.findByUserOrderByPlacedAtDesc(user, pageable));
         return "orderList";
     }

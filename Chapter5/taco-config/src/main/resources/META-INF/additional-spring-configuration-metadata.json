@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "taco.orders.pageSize",
+      "type": "java.lang.String",
+      "description": "Description for taco.orders.pageSize."
+    },
+    {
+      "name": "gretting.welcome",
+      "type": "java.lang.String",
+      "description": "Description for gretting.welcome."
+    }
+  ]
+}
