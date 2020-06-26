@@ -418,8 +418,54 @@ public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Ord
 
 ## 第五章 使用配置属性
 
+## 5.1 细粒度的自动配置
 带有@Bean注解的方法一般会同时初始化Bean并立即为它的属性设置值。
 
-Spring获取属性源的方式有：
+Spring获取**属性源**的方式有：
 ![Resource/5-1.png](Resource/5-1.png)
 
+举个栗子：
+想要把端口设置为8080
+1. 在application.properties/yml中加入server.port属性
+2. 运行jar包时命令行参数
+`$ java -jar tacocloud.jar --server.port=8080`
+3. 声明环境变量
+`export SERVER_PORT=8080`
+
+#### 配置数据源
+```java
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring-action-jpa
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+```
+如果存在连接池，会自动使用配置的数据源
+
+如果想让程序启动时执行数据库SQL，可以配置
+`spring.datasource.schema`和`spring.datasourcce.data`属性
+```java
+spring:
+  datasource:
+    schema:
+      - order-schema.sql
+```
+#### 配置嵌入式服务器
+
+1. 端口号  
+如果server.port属性被设置为了0，服务器选择**任选一个可用**的端口，保证并发运行的测试不会与硬编码的端口号冲突。
+2. HTTPS
+
+可以使用JDK的keytool命令行工具生成keystore
+```java
+keytool -keystore mykeys.jks -genkey -alias tomcat -keyalg RSA
+```
+过程中出了密码，其余无关紧要，比如使用letmein作为密码，则在配置文件中使用如配置
+```java
+server:
+  ssl:
+    key-store: mykeys.jks
+    key-store-password: letmain
+    key-password: letmain
+```
