@@ -42,13 +42,6 @@
         <appender-ref ref="STDOUT" />
     </logger>
 
-    <!-- 3.-->
-    <!--<logger name="org.hibernate.type" additivity="false" >-->
-    <!--<level value="TRACE" />-->
-    <!--<appender-ref ref="file" />-->
-    <!--<appender-ref ref="console" />-->
-    <!--</logger>-->
-
     <root level="info">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />

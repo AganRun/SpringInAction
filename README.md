@@ -432,7 +432,7 @@ Spring获取**属性源**的方式有：
 3. 声明环境变量
 `export SERVER_PORT=8080`
 
-#### 配置数据源
+### 配置数据源
 ```java
 spring:
   datasource:
@@ -451,7 +451,7 @@ spring:
     schema:
       - order-schema.sql
 ```
-#### 配置嵌入式服务器
+### 配置嵌入式服务器
 
 1. 端口号  
 如果server.port属性被设置为了0，服务器选择**任选一个可用**的端口，保证并发运行的测试不会与硬编码的端口号冲突。
@@ -469,3 +469,80 @@ server:
     key-store-password: letmain
     key-password: letmain
 ```
+
+### 配置日志 
+默认情况下，SpringBoot通过Logback配置日志，日志会以INFO级别写入控制台。
+可以加入logback的xml文件后，在配置文件中声明
+
+以下是logback的内容（控制台和文件同时打印+JPA的SQL打印）
+```java
+<configuration debug="false">
+    <!-- 应用名称 -->
+    <property name="APP_NAME" value="logTest" />
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_HOME" value="${log.dir:-logs}/${APP_NAME}" />
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg  %n</pattern>
+        </encoder>
+    </appender>
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <FileNamePattern>${LOG_HOME}/runtime.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- each file should be at most 5MB, keep 30 days worth of history, but at most 100MB -->
+            <maxFileSize>5MB</maxFileSize>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <!--用来指定日志文件的上限大小，那么到了这个值，就会删除旧的日志-->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 1. 输出SQL 到控制台和文件-->
+    <logger name="org.hibernate.SQL" additivity="false" >
+        <level value="DEBUG" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- 2. 输出SQL 的参数到控制台和文件-->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false" level="TRACE" >
+        <level value="TRACE" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
+```
+
+Spring配置文件加入如下配置
+```java
+spring:
+  # 打印SQL
+    show-sql: true
+# 配置日志
+logging:
+  config: classpath:logback.xml
+```
+
+如果只是简易版，可以直接在配置文件中配置
+```java
+logging:
+  path: /var/logs/
+  file: TacoCloud.log
+  level:
+    root: WARN
+```
+将日志写入/var/logs/TacoCloud.log文件，默认日志文件达到10MB轮换。
