@@ -546,3 +546,97 @@ logging:
     root: WARN
 ```
 将日志写入/var/logs/TacoCloud.log文件，默认日志文件达到10MB轮换。
+
+## 5.2 自定义配置属性
+
+需求：用户订单列表接口的分页大小，由配置文件给出
+1. 先在配置文件中加入pageSize配置
+    ```java
+    taco: 
+      orders: 
+        pageSize: 20
+    ```
+2. 加入@ConfigurationProperties
+    ```java
+    //@ConfigurationProperties(prefix = "taco.orders")
+    public class OrderController {
+        private int pageSize = 20;
+        public void setPageSize(int pageSize) {
+            this.pageSize = pageSize;
+        }
+    ```
+   一般，特定的**配置细节**会从控制器和其他应用程序中**抽离出来**
+3. 通用的配置类，提升复用性
+    ```java
+    @Component
+    @Data
+    @ConfigurationProperties(prefix = "taco.orders")
+    public class OrderProperties {
+        private int pageSize = 20;
+    }
+    ```
+    其他类注入OrderProperties即可
+    
+### 声明配置属性元数据
+
+在IDEA等编辑器中，发现自定义的配置属性会被提示`unknown property 'taco'`
+
+消除警告的方法就是创建自定义配置属性的元数据。在META-INF下创建一个名为additional-spring-configuration-metadata.json的文件
+这个操作可以通过编辑器快捷操作完成。
+```java
+{
+  "properties": [
+    {
+      "name": "taco.orders.pageSize",
+      "type": "java.lang.String",
+      "description": "Description for taco.orders.pageSize."
+    }
+  ]
+}
+```
+
+## 5.3 使用Profile进行配置
+
+需求：应用部署到不同的环境上，通常配置的细节有不同。比如数据库、日志级别
+
+可以使用SpringProfile。profile是一种条件化的配置，可以觉得运行时哪些profile处于激活状态。可以***使用或忽略不同的bean、配置类和配置属性***。
+
+1. 定义特定的profile属性
+* 可以创建不同的配置文件，遵循application-{profile}.properties/yml的方式  
+例如：application-dev.yml、application-prod.yml
+* 也可以定义相关属性。（仅适用于yaml配置）  
+    ```text
+    logging:                # 没有配置profile属性代表通用
+      level:
+        tacos: DEBUG    
+    ---                     # 通过三个中划线分割不同的profile
+    spring:
+      profile: prod         # 代表这是prod环境
+    logging:
+      level:
+        tacos: WARN
+    ```
+2. 激活profile
+- 配置application.yml
+    ```java
+    spring:
+      profiles: 
+        active: 
+          - prod
+   ```
+  但是这个可能是最糟糕的方式
+- 环境变量的方式（推荐）
+  `export SPRING_PROFILES_ACTIVE=prod`
+- 命令行的方式
+  `java jar -taco-cloud.jar --spring.profiles.active=prod`
+ 
+可以同时激活**多个profile**，配置文件可以另起一行，命令行用逗号分隔
+
+### 5.3.3 使用Profile条件化创建Bean
+
+可以通过@Profile注解将某些Bean设置到指定的profile。这是几种写法。
+```java
+@Profile("dev")
+@Profile({"dev", "qa"})
+@Profile("!prod")
+```
