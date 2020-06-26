@@ -640,3 +640,9 @@ logging:
 @Profile({"dev", "qa"})
 @Profile("!prod")
 ```
+
+## 第五章总结
+* 可添加@ConfigurationProperties,从多个属性源获取配置
+* 配置属性来源有命令行参数、环境变量、JVM系统属性、属性文件、YAML文件等
+* 配置属性可以覆盖自动配置的设置，例如数据源URL
+* Profile可以与属性源协同使用，从而激活不同的配置
