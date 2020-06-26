@@ -415,3 +415,11 @@ public String processDesign(@Valid Taco taco, Errors errors, @ModelAttribute Ord
 - 可以通过多种存储方式配置管理[内存、自定义、LDAP、数据库]
 - 自动防范CSRF攻击
 - 获取用户信息的多种方式
+
+## 第五章 使用配置属性
+
+带有@Bean注解的方法一般会同时初始化Bean并立即为它的属性设置值。
+
+Spring获取属性源的方式有：
+![Resource/5-1.png](Resource/5-1.png)
+
