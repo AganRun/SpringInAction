@@ -21,8 +21,4 @@
         <tacocloud.version>${project.version}</tacocloud.version>
     </properties>
 
-    <modules>
-        <module>../tacos</module>
-        <module>../tacocloud-ui</module>
-    </modules>
 </project>
