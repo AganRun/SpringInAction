@@ -646,3 +646,22 @@ logging:
 * 配置属性来源有命令行参数、环境变量、JVM系统属性、属性文件、YAML文件等
 * 配置属性可以覆盖自动配置的设置，例如数据源URL
 * Profile可以与属性源协同使用，从而激活不同的配置
+
+# 第二部分 Spring集成
+
+# 第六章 创建REST服务
+
+创建Restful服务，那么前端框架可以使用Angular、React、Vue.js等适合自己的前端技术。
+
+> Angular参考书籍 Jeremy Wilken编写的《Angular in Action》以及Yakov Fain和Anton Moiseev编写的《Angular Development with TypeScript, Second Edition》
+
+Spring为不同的Http请求提供了注解
+
+|注解|Http方法|典型用途|
+|---|---|---|
+|@GetMapping| Http GET请求| 读取资源 |
+|@PostMapping| Http POST请求| 创建资源 |
+|@PutMapping| Http PUT请求| 更新资源 |
+|@GetMapping| Http PATCH请求| 更新资源（局部） |
+|@DeleteMapping| Http DELETE请求| 删除资源 |
+|@RequestMapping| 通用的请求处理|  |
