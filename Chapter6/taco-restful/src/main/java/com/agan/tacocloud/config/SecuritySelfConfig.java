@@ -31,18 +31,19 @@ public class SecuritySelfConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .authorizeRequests()
-                .antMatchers("/design", "/orders")
-//                    .hasRole("USER")
-                    .access("hasRole('USER')")     // design 和 orders 路径，需要有user角色
-                .antMatchers("/", "/**")
-//                    .permitAll();
-                    .access("permitAll")    //对于/和/**路径不拦截
-            .and()
-                .formLogin()
-                    .loginPage("/login")   //登录页面
-                    .defaultSuccessUrl("/design")  //成功后重定向到design页面
-            ;
+//        http
+//            .authorizeRequests()
+//                .antMatchers("/design", "/orders")
+////                    .hasRole("USER")
+//                    .access("hasRole('USER')")     // design 和 orders 路径，需要有user角色
+//                .antMatchers("/", "/**")
+////                    .permitAll();
+//                    .access("permitAll")    //对于/和/**路径不拦截
+//            .and()
+//                .formLogin()
+//                    .loginPage("/login")   //登录页面
+//                    .defaultSuccessUrl("/design")  //成功后重定向到design页面
+//            ;
+        http.authorizeRequests().antMatchers("/**").permitAll();
     }
 }
