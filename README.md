@@ -665,3 +665,23 @@ Spring为不同的Http请求提供了注解
 |@GetMapping| Http PATCH请求| 更新资源（局部） |
 |@DeleteMapping| Http DELETE请求| 删除资源 |
 |@RequestMapping| 通用的请求处理|  |
+
+#### 6.1 RestFul控制器
+
+##### @RestController  
+Controller + ResponseBody 该控制器所有的返回是json形式
+
+##### @RequestMapping(produces = "application/json")
+声明该处理器只处理Accept头信息包含“application/json”的请求
+
+##### @CrossOrigin(origins = "*")  
+由于前段与API可能会运行在独立的主机或端口上，Web浏览器会阻止客户端消费API。  
+@CrossOrigin允许来自任何域的客户端消费该API
+
+##### 6.1.2 发送服务器到服务器端
+
+正常情况下，HTTP成功的返回是200。有时想使返回的HTTP更具有描述性，可以知道返回的状态码。例如201代表创建了一个资源
+```java
+@ResponseStatus(HttpStatus.CREATED)
+```
+

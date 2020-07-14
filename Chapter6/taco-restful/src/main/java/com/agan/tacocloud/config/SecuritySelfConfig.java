@@ -24,10 +24,10 @@ public class SecuritySelfConfig extends WebSecurityConfigurerAdapter {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService);
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userService);
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -44,6 +44,9 @@ public class SecuritySelfConfig extends WebSecurityConfigurerAdapter {
 //                    .loginPage("/login")   //登录页面
 //                    .defaultSuccessUrl("/design")  //成功后重定向到design页面
 //            ;
-        http.authorizeRequests().antMatchers("/**").permitAll();
+        http
+            .authorizeRequests()
+                .antMatchers("/**").permitAll()
+            .and().csrf().disable();
     }
 }
