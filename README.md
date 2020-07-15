@@ -693,3 +693,11 @@ Controller + ResponseBody 该控制器所有的返回是json形式
 - REST端点可以通过SpringMVC来创建
 - 将数据写入响应体可以通过@ReponseBody或ResponseEntity对象实现
 - RestController = RequestMapping + ResponseBody
+
+# 第七章 消费REST服务
+
+Spring消费REST API的几种方式
+* RestTemplate: Spring核心框架通过，简单、同步REST客户端【本章重点】
+* Traverson: Spring HATEOAS提供，同步的REST客户端
+* WebCline: Spring5引入，反应式、异步REST客户端
+

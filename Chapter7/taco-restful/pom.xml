@@ -23,6 +23,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.agan</groupId>
+            <artifactId>taco-domain</artifactId>
+            <version>${tacocloud.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
