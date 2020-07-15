@@ -1,16 +1,14 @@
 package com.agan.tacocloud.controller;
 
-import javax.validation.Valid;
-
+import com.agan.tacocloud.common.ResponseMessage;
 import com.agan.tacocloud.dao.OrderRepository;
 import com.agan.tacocloud.po.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 @Controller
@@ -25,19 +23,32 @@ public class OrderController {
         this.orderRepo = orderRepo;
     }
 
-    @GetMapping("/current")
-    public String orderForm() {
-        return "orderForm";
+    @PutMapping("/{orderId}")
+    public ResponseMessage<Order> putOrder(@RequestBody Order order) {
+        return ResponseMessage.success(orderRepo.save(order));
     }
 
-    @PostMapping
-    public String processOrder(Order order, Errors errors, SessionStatus sessionStatus) {
-        if (errors.hasErrors()) {
-            return "orderForm";
+    @PatchMapping(path = "/{orderId}", consumes = "application/json")
+    public ResponseMessage patchOrder(@RequestBody Order patch, @PathVariable("orderId") Long orderId) {
+        Order order = orderRepo.findById(orderId).get();
+        if (patch.getDeliveryName() != null) {
+            order.setDeliveryName(patch.getDeliveryName());
         }
-        orderRepo.save(order);
-        sessionStatus.setComplete();
-        return "redirect:/";
+        //此处省略其他属性替换
+        if (patch.getCcCVV() != null) {
+            order.setCcCVV(patch.getCcCVV());
+        }
+        return ResponseMessage.success(orderRepo.save(order));
     }
+
+   @DeleteMapping("/{orderId}")
+   @ResponseStatus(code = HttpStatus.NO_CONTENT)
+   public void deleteOrder(@PathVariable("orderId") Long orderId) {
+        try{
+            orderRepo.deleteById(orderId);
+        } catch (EmptyResultDataAccessException e) {
+
+        }
+   }
 
 }
