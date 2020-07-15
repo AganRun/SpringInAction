@@ -25,9 +25,9 @@ public class Taco {
     @Size(min = 5, message = "Name must be at least 5 characters long")
     private String name;
 
-    @ManyToMany(targetEntity = Ingredient.class)
+    @ManyToMany(targetEntity = com.agan.tacocloud.po.Ingredient.class)
     @Size(min = 1, message = "You must choose at least 1 ingredient")
-    private List<Ingredient> ingredients;
+    private List<com.agan.tacocloud.po.Ingredient> ingredients;
 
     @PrePersist
     void createAt() {
