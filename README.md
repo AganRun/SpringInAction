@@ -666,7 +666,7 @@ Spring为不同的Http请求提供了注解
 |@DeleteMapping| Http DELETE请求| 删除资源 |
 |@RequestMapping| 通用的请求处理|  |
 
-#### 6.1 RestFul控制器
+## 6.1 RestFul控制器
 
 ##### @RestController  
 Controller + ResponseBody 该控制器所有的返回是json形式
@@ -678,10 +678,18 @@ Controller + ResponseBody 该控制器所有的返回是json形式
 由于前段与API可能会运行在独立的主机或端口上，Web浏览器会阻止客户端消费API。  
 @CrossOrigin允许来自任何域的客户端消费该API
 
-##### 6.1.2 发送服务器到服务器端
+### 6.1.2 发送服务器到服务器端
 
-正常情况下，HTTP成功的返回是200。有时想使返回的HTTP更具有描述性，可以知道返回的状态码。例如201代表创建了一个资源
+正常情况下，HTTP成功返回状态码是200。有时想使返回的HTTP更具有描述性，可以知道返回的状态码。例如201代表创建了一个资源
 ```java
 @ResponseStatus(HttpStatus.CREATED)
+@ResponseStatus(code = HttpStatus.NO_CONTENT)   //确保只响应204，不返回任何资源【delete使用】
 ```
 
+6.2-6.3内容为超媒体相关
+
+## 6.4 总结
+
+- REST端点可以通过SpringMVC来创建
+- 将数据写入响应体可以通过@ReponseBody或ResponseEntity对象实现
+- RestController = RequestMapping + ResponseBody
