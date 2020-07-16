@@ -710,3 +710,22 @@ rest.getForObject("http://localhost:8080/ingredients/{id}", Ingredient.class, in
 如果参数过多，可以封装到Map中，传入第三个参数
 
 - getForEntity。使用方法类似，区别是返回的是ResponseEntity对象，包含响应细节，例如响应头信息   
+
+### PUT资源
+
+```java
+rest.put("http://localhost:8080/ingredients/{id}", ingredient, ingredient.getId());
+```
+
+### POST资源
+```java
+rest.postForObject("http://localhost:8080/ingredients", ingredient, Ingredient.class);
+```
+
+### DELETE请求
+```java
+rest.delete("http://localhost:8080/ingredients/{id}", ingredient.getId());
+```
+
+
+

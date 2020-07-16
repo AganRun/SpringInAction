@@ -38,4 +38,32 @@ public class TacoClient {
         return reposnse.getBody();
     }
 
+    /**
+     * PUT请求
+     * @param ingredient
+     */
+    public void updateIngredient(Ingredient ingredient) {
+        rest.put("http://localhost:8080/ingredients/{id}",
+                ingredient, ingredient.getId());
+    }
+
+    /**
+     * POST 请求
+     * @param ingredient
+     * @return
+     */
+    public Ingredient createIngredient(Ingredient ingredient) {
+        return rest.postForObject("http://localhost:8080/ingredients",
+                ingredient, Ingredient.class);
+    }
+
+    /**
+     * DELETE 请求
+     * @param ingredient
+     */
+    public void deleteIngredient(Ingredient ingredient) {
+        rest.delete("http://localhost:8080/ingredients/{id}",
+                ingredient.getId());
+    }
+
 }
