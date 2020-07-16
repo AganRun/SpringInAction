@@ -701,3 +701,12 @@ Spring消费REST API的几种方式
 * Traverson: Spring HATEOAS提供，同步的REST客户端
 * WebCline: Spring5引入，反应式、异步REST客户端
 
+### GET资源
+
+- getForObject(URL, 返回类型, 参数列表...)
+```java
+rest.getForObject("http://localhost:8080/ingredients/{id}", Ingredient.class, ingredientId);
+```
+如果参数过多，可以封装到Map中，传入第三个参数
+
+- getForEntity。使用方法类似，区别是返回的是ResponseEntity对象，包含响应细节，例如响应头信息   
