@@ -1,0 +1,10 @@
+spring:
+  artemis:
+    host: 192.168.88.200
+    port: 61616
+    user: AganRun
+    password: AganRun
+  # 设置默认发送位置
+  jms:
+    template:
+      default-destination: taco.queue

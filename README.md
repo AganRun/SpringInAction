@@ -727,5 +727,66 @@ rest.postForObject("http://localhost:8080/ingredients", ingredient, Ingredient.c
 rest.delete("http://localhost:8080/ingredients/{id}", ingredient.getId());
 ```
 
+# 第八章 发送异步消息
 
+## 8.1 使用JMX发送消息
 
+JMX是一个标准，定义了消息代理（message broker）的通用API，就想JDBC为数据库访问提供了通用接口一样。  
+JMX长期以来一直是异步消息首选方案。  
+
+### 8.1.1 搭建JMX环境
+
+启动器可以使用ActiveMQ或者ActiveMQ Artemis（重新实现的下一代ActiveMQ）。  
+- Artemis：默认情况下运行在61616端口
+
+### 8.1.2 使用JmsTemplate发送消息
+
+JmsTemplate是Spring对JMS集成支持功能的核心，与其他模块类似，消除了大量传统使用方式的样板代码
+
+```java
+public void send(MessageCreator messageCreator);
+public void send(Destination destination, MessageCreator messageCreator);
+public void send(String destinationName, MessageCreator messageCreator);
+
+public void convertAndSend(Object message);
+public void convertAndSend(Destination destination, Object message);
+public void convertAndSend(String destinationName, Object message);
+
+public void convertAndSend(Object message, MessagePostProcessor postProcessor);
+public void convertAndSend(Destination destination, Object message, MessagePostProcessor postProcessor);
+public void convertAndSend(String destinationName, Object message, MessagePostProcessor postProcessor);
+```
+
+##### 三种发送
+- send()需要MessageCreator生成Message对象
+- covertAndSend()接受Object对象，自动转为Message
+  
+  这个**自动转换**的操作是通过MessageConverter实现的,Spring定义了接口
+  ```java
+    Message toMessage(Object var1, Session var2)
+    Object fromMessage(Message var1)
+  ```
+  默认有四种实现类。
+    - MappingJackson2MessageConverter  与JSon的转换
+    - MarshallingMessageConverter   与XML的转换
+    - MessagingMessageConverter
+    - SimpleMessageConverter(默认)
+- covertAndSend()自动Object->Message，并且接受一个MessagePostProcessor对象，用来发送前对Message进行定义  
+  
+  可以对消息**进行后期处理**，比如可以统一加上便于区分的头信息
+  ```java
+    jmsTemplate.convertAndSend(message, new MessagePostProcessor() {
+        @Override
+        public Message postProcessMessage(Message message) throws JMSException {
+            message.setStringProperty("X_SOURCE", "MASTER");
+            return message;
+        }
+    });
+  ```
+  
+##### 三个重载方法
+- 一个方法不接受目的地参数，会发送至默认目的地
+- 一个方法接受Destination对象，该对象指定了目的地
+- 接受String,他通过名字指定消息目的地
+
+默认目的地spring.jms.template.default-destination=taco.queue
