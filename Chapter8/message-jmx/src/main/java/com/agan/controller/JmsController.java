@@ -1,5 +1,6 @@
 package com.agan.controller;
 
+import com.agan.message.JmsReceiveMessagingService;
 import com.agan.message.JmsSendMessagingService;
 import com.agan.message.MyMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import java.util.UUID;
 public class JmsController {
 
     @Autowired
-    private JmsSendMessagingService service;
+    private JmsSendMessagingService sendService;
+    @Autowired
+    private JmsReceiveMessagingService receiveService;
 
     @GetMapping("/send")
     public void send(String name) {
@@ -20,8 +23,14 @@ public class JmsController {
         MyMessage message = new MyMessage();
         message.setUuid(uuid);
         message.setName(name);
-        service.sendMessage(message);
-        service.convertAndSendMessage(message);
-        service.convertAndSendMessage(message, true);
+//        sendService.sendMessage(message);
+        sendService.convertAndSendMessage(message);
+//        sendService.convertAndSendMessage(message, true);
+    }
+
+    @GetMapping("/receive")
+    public void receive() {
+//        System.out.println(receiveService.receive());
+        System.out.println(receiveService.receiveAndConvert());
     }
 }

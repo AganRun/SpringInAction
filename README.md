@@ -790,3 +790,39 @@ public void convertAndSend(String destinationName, Object message, MessagePostPr
 - 接受String,他通过名字指定消息目的地
 
 默认目的地spring.jms.template.default-destination=taco.queue
+
+## 8.1.3 接收JMS消息
+
+一半有两种消费模式
+1. 拉取模式  
+    一直等待消息到达。比如说后厨准备好做下一道菜，点击接收。  
+    如果消息少，会导致等待阻塞。
+2. 推送模式 @JmsListener  
+    在消息可用时自动执行，通常被视为最佳选择，因为不会导致阻塞。  
+    如果消息太快处理不完，监听器可能过载。
+    
+JmsTemplate都是拉取模式，**如果消息能够快速得到处理，那么他们是非常适合的方案。  
+但是，如果消息处理器需要根据自己的时间请求更多信息，拉取模式更适合。**
+
+JMS作为JAVA规范只能运行在Java应用中，RabbitMQ和Kafka等较新的消息传递方案克服了这类问题。
+
+## 8.2 使用RabbitMQ和AMQP
+
+RabbitMq可以说是AMQP(Advanced Message Queuing Protocol, 高级消息队列协议)最杰出的实现，提供了比JMS更高级的消息路由策略。
+
+![RabbitMq](Resource/8-1.png)
+
+消息抵达MQ代理时，会进入设置的Exchange上，Exchange负责将它路由到一个或多个队列中去。  
+这个过程会根据exchange的类型、exchange和队列之前的binding以及消息的routing Key进行路由。
+
+具体可以参考《RabbitMQ in Action》Alvaro Videla、Jason J.W.Williams。使用方法和JmsTemplate类似。
+
+## 8.3 使用Kafka的消息
+
+![Kafka](Resource/8-2-Kafka.png)
+
+详情可以阅读《Kafka in Action》-Dylan Scott。
+
+# 第九章 Spring集成
+
+# 第三部分 反应式Spring
